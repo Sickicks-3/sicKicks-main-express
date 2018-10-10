@@ -14,10 +14,10 @@ authRoutes.post('/signup', (req, res, next) => {
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const email = req.body.email;
-    const favoriteClub = req.body.favoriteClub;
-    const playerPosition = req.body.playerPosition;
-    const summary = req.body.summary;
-    const avatar = req.body.avatar;
+    // const favoriteClub = req.body.favoriteClub;
+    // const playerPosition = req.body.playerPosition;
+    // const summary = req.body.summary;
+    // const avatar = req.body.avatar;
 
 
     if (!username || !password) {
@@ -28,9 +28,9 @@ authRoutes.post('/signup', (req, res, next) => {
     if(password.length < 7){
         res.status(400).json({ message: 'Please make your password at least 7 characters long for security purposes.' });
         return;
-    }
-  
+    }  
     User.findOne({ username }, (err, foundUser) => {
+        console.log('=-=-=-=-=-=-=-=-=-=-=-')
 
         if(err){
             res.status(500).json({message: "Username check went bad."});
@@ -44,6 +44,8 @@ authRoutes.post('/signup', (req, res, next) => {
   
         const salt     = bcrypt.genSaltSync(10);
         const hashPass = bcrypt.hashSync(password, salt);
+
+
   
         const aNewUser = new User({
             username: username,
@@ -51,13 +53,15 @@ authRoutes.post('/signup', (req, res, next) => {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            favoriteClub: favoriteClub,
-            playerPosition: playerPosition,
-            summary: summary,
-            avatar: avatar
+            // favoriteClub: favoriteClub,
+            // playerPosition: playerPosition,
+            // summary: summary,
+            // avatar: avatar
         });
+
   
         aNewUser.save(err => {
+            console.log('savinGGGGGGGGGG')
             if (err) {
                 res.status(400).json({ message: 'Saving user to database went wrong.' });
                 return;
@@ -67,10 +71,13 @@ authRoutes.post('/signup', (req, res, next) => {
             // .login() here is actually predefined passport method
             req.login(aNewUser, (err) => {
 
+
                 if (err) {
                     res.status(500).json({ message: 'Login after signup went bad.' });
                     return;
                 }
+
+                console.log('made it all the way')
             
                 // Send the user's information to the frontend
                 // We can use also: res.status(200).json(req.user);
